@@ -1,24 +1,38 @@
 var coll = document.getElementsByClassName("collapsible");
 var chat = "lets start the chat!"
 
-var saveuserchat = []
-var userchatcount = 0
-var savebotchat = []
-var botchatcount = 0
+var previousChatHistory = [];
 
-if(window.localStorage.getItem('chat') == null && window.localStorage.getItem('botchat') == null){
+if(window.localStorage.getItem('chatHistory') == null ){
     firstBotMessage();
 }
 else{
-    previousChatHistory();
+     previousChatSession();
 }
 
-function previousChatHistory(){
-    var getuserchat = window.localStorage.getItem('chat')
-    var getbotchat = window.localStorage.getItem('botchat')
-    for(let i =0;i<getuserchat.length;i++){
-        console.log(getuserchat[i])
+function previousChatSession(){
+    var retrievedObject = window.localStorage.getItem('chatHistory')
+    previousChatHistory = JSON.parse(retrievedObject)
+    
+    for(let i = 0; i < previousChatHistory.length; i++)
+    {   
+        if(previousChatHistory[0].user == "USER")
+        {
+            let userText = previousChatHistory[i].message;
+            let userHtml = '<p class="userText"><span>' + userText + '</span></p>';
+            $("#textInput").val("");
+            $("#chatbox").append(userHtml);
+            
+        }
+        else 
+        {
+            let botResponse = previousChatHistory[i].message;
+            let botHtml = '<p class="botText"><span>' + botResponse + '</span></p>';
+            $("#chatbox").append(botHtml);
+            
+        }
     }
+    //iterate through list of objects to print the previous chat history
 }
 
 function getTime() {
@@ -58,8 +72,12 @@ function getHardResponse(userText = prompt()) {
     $("#chatbox").append(botHtml);
 
     document.getElementById("chat-bar-bottom").scrollIntoView(true);
-    saveuserchat[userchatcount++] = userText
-    window.localStorage.setItem('chat',saveuserchat)
+
+    let time = getTime();
+    previousChatHistory.push({id : previousChatHistory.length + 1, message : userText, time: time, user: "USER"});
+    
+    console.log(previousChatHistory);
+    window.localStorage.setItem('chatHistory',JSON.stringify(previousChatHistory))
 }
 
 //Gets the text from the input box and processes it
@@ -80,8 +98,10 @@ function getResponse() {
         getHardResponse(userText);
     }, 1000)
 
-    savebotchat[botchatcount++] = userText
-    window.localStorage.setItem('botchat',savebotchat)
+    let time = getTime();
+    previousChatHistory.push({id : previousChatHistory.length + 1, message : userText, time: time, user: "BOT"});
+    
+    window.localStorage.setItem('chatHistory',JSON.stringify(previousChatHistory))
 }
 
 // Handles sending text via button clicks
@@ -104,8 +124,8 @@ $("#textInput").keypress(function (e) {
     }
 });
 
-function afterRefresh() {
-    window.localStorage.getItem('chat')
-}
+// function afterRefresh() {
+//     window.localStorage.getItem('chat')
+// }
 
 newFunction();
