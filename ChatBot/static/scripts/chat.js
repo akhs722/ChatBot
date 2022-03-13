@@ -1,19 +1,26 @@
 var coll = document.getElementsByClassName("collapsible");
+var chat = "lets start the chat!"
 
-for (let i = 0; i < coll.length; i++) {
-    coll[i].addEventListener("click", function () {
-        this.classList.toggle("active");
+var saveuserchat = []
+var userchatcount = 0
+var savebotchat = []
+var botchatcount = 0
 
-        var content = this.nextElementSibling;
-
-        if (content.style.maxHeight) {
-            content.style.maxHeight = null;
-        } else {
-            content.style.maxHeight = content.scrollHeight + "px";
-        }
-
-    });
+if(window.localStorage.getItem('chat') == null && window.localStorage.getItem('botchat') == null){
+    firstBotMessage();
 }
+else{
+    previousChatHistory();
+}
+
+function previousChatHistory(){
+    var getuserchat = window.localStorage.getItem('chat')
+    var getbotchat = window.localStorage.getItem('botchat')
+    for(let i =0;i<getuserchat.length;i++){
+        console.log(getuserchat[i])
+    }
+}
+
 function getTime() {
     let today = new Date();
     hours = today.getHours();
@@ -33,7 +40,8 @@ function getTime() {
 
 // Gets the first message
 function firstBotMessage() {
-    let firstMessage = "lets start the chat!"
+
+    let firstMessage = chat
     document.getElementById("botStarterMessage").innerHTML = '<p class="botText"><span>' + firstMessage + '</span></p>';
 
     let time = getTime();
@@ -42,7 +50,6 @@ function firstBotMessage() {
     document.getElementById("userInput").scrollIntoView(false);
 }
 
-firstBotMessage();
 
 // Retrieves the response
 function getHardResponse(userText = prompt()) {
@@ -51,6 +58,8 @@ function getHardResponse(userText = prompt()) {
     $("#chatbox").append(botHtml);
 
     document.getElementById("chat-bar-bottom").scrollIntoView(true);
+    saveuserchat[userchatcount++] = userText
+    window.localStorage.setItem('chat',saveuserchat)
 }
 
 //Gets the text from the input box and processes it
@@ -71,6 +80,8 @@ function getResponse() {
         getHardResponse(userText);
     }, 1000)
 
+    savebotchat[botchatcount++] = userText
+    window.localStorage.setItem('botchat',savebotchat)
 }
 
 // Handles sending text via button clicks
@@ -86,13 +97,15 @@ function sendButton() {
     getResponse();
 }
 
-function heartButton() {
-    buttonSendText("Heart clicked!")
-}
-
 // Press enter to send a message
 $("#textInput").keypress(function (e) {
     if (e.which == 13) {
         getResponse();
     }
 });
+
+function afterRefresh() {
+    window.localStorage.getItem('chat')
+}
+
+newFunction();

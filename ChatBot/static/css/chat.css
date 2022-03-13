@@ -57,6 +57,7 @@
     scrollbar-width: none;
     height: max-content;
     transition: max-height 0.2s ease-out;
+    padding-bottom: 5px;
 }
 
 .outer-container {
@@ -73,6 +74,7 @@
     left: 0;
     scroll-behavior: smooth;
     hyphens: auto;
+    padding-bottom: 10px;
 }
 
 .chat-container::-webkit-scrollbar {
@@ -177,7 +179,7 @@
 
 @media screen and (max-width:600px) {
     .full-chat-block {
-        width: 100%;
+        width: auto;
         border-radius: 0px;
     }
     .chat-bar-collapsible {
@@ -185,6 +187,7 @@
         bottom: 0;
         right: 0;
         width: 100%;
+        scroll-behavior: smooth;
     }
     .collapsible {
         width: 100%;
